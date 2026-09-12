@@ -6,8 +6,12 @@ Proyek ini merupakan analisis data transaksi sebuah supermarket di Indonesia per
 - [Dataset](#dataset)
 - [1. Pembersihan & Analisis Data (Google Sheets + SQL)](#1-pembersihan--analisis-data-google-sheets--sql)
 - [2. Visualisasi Data (Looker Studio)](#2-visualisasi-data-looker-studio)
-- [3. Analisis Prediktif (Orange Data Mining)](#3-analisis-prediktif-orange-data-mining)
+- [3. Supermarket BI by Kendrick Filbert (Plotly Dash)](#3-supermarket-bi-by-kendrick-filbert-plotly-dash)
+- [4. Analisis Prediktif (Orange Data Mining)](#4-analisis-prediktif-orange-data-mining)
+- [Menjalankan Dashboard](#menjalankan-dashboard)
+- [Teknologi yang Digunakan](#teknologi-yang-digunakan)
 - [Berkas Proyek](#berkas-proyek)
+- [Kontributor](#kontributor)
 
 ---
 
@@ -50,7 +54,34 @@ Dua dashboard interaktif dibangun di Looker Studio untuk menyajikan insight seca
 
 File dashboard: `informasi_penjualan_super_market_indonesia.pdf`
 
-## 3. Analisis Prediktif (Orange Data Mining)
+## 3. Supermarket BI by Kendrick Filbert (Plotly Dash)
+
+Sebagai pengembangan lanjutan dari dashboard Looker Studio, dibangun juga dashboard *business intelligence* interaktif berbasis **Python, Plotly, dan Dash** bernama **Supermarket BI by Kendrick Filbert**. Dashboard ini menggunakan dataset bersih yang sama (10.076 record transaksi) dan menawarkan eksplorasi data yang jauh lebih dalam dibanding enam visualisasi dasar di Looker Studio — mencakup analisis profitabilitas, portofolio produk, segmentasi pelanggan, hingga efisiensi operasional pengiriman.
+
+**Identitas aplikasi:**
+- Nama aplikasi: *Supermarket BI by Kendrick Filbert*
+- Framework: Plotly Dash (v4.4.1) + Dash Bootstrap Components
+- Periode data: 2014–2017
+- Footer: *Made by Kendrick Filbert*
+
+Dashboard terbagi menjadi 4 halaman:
+
+**Executive Overview** — KPI utama (total penjualan, total keuntungan, margin keuntungan, jumlah pesanan unik, jumlah pelanggan unik, AOV, jumlah transaksi merugi, rata-rata durasi pengiriman), tren penjualan & keuntungan bulanan, kontribusi kategori produk, kinerja kota (warna batang = margin), serta *seasonality heatmap* tahun × bulan.
+
+**Profitability** — scatter plot penjualan vs keuntungan (ukuran = kuantitas, warna = kategori), profit bridge per subkategori (hijau = untung, merah = rugi), dampak diskon terhadap margin, dan tabel transaksi dengan kerugian terbesar.
+
+**Product Intelligence** — top 15 produk berdasarkan penjualan (dengan indikator margin), matriks portofolio produk 4 kuadran (*Star, Volume Driver, Hidden Gem, Underperformer*), Pareto chart kontribusi produk, dan treemap hierarki kategori → subkategori → nilai penjualan.
+
+**Customer & Operations** — nilai pelanggan per segmen (Consumer, Corporate, Home Office), preferensi metode pengiriman, kecepatan pengiriman per metode (dihitung dari `clean_tanggal_pengiriman - tanggal_pemesanan`), dan daftar top pelanggan berdasarkan total penjualan.
+
+**Fitur pendukung:**
+- Filter interaktif: rentang tahun, wilayah, kota (menyesuaikan wilayah terpilih), kategori produk, segmen pelanggan, dengan tombol *Reset filter*.
+- Tombol *Unduh data terfilter* → mengunduh `supermarket_filtered.csv`.
+- Format nilai dalam Rupiah, tampilan responsif, serta *empty-state handling* saat filter tidak menghasilkan data.
+
+File aplikasi: `app.py` (menggunakan `sources.csv` sebagai sumber data, harus berada di folder yang sama).
+
+## 4. Analisis Prediktif (Orange Data Mining)
 
 **Pertanyaan yang dijawab:** *"Berapa perkiraan keuntungan yang didapatkan dari hasil penjualan toko?"*
 
@@ -86,12 +117,52 @@ Nilai MAPE pada kedua model menghasilkan `inf` karena terdapat keuntungan aktual
 
 File workflow: `analisis-prediktif-supermarket.ows`
 
+## Menjalankan Dashboard
+
+**Persyaratan:** Python 3.10 atau lebih baru.
+
+1. Pastikan `sources.csv` berada di folder yang sama dengan `app.py`.
+2. Buat virtual environment (opsional tapi disarankan):
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate      # Windows
+   source .venv/bin/activate   # macOS/Linux
+   ```
+3. Pasang dependencies dan jalankan:
+   ```bash
+   pip install -r requirements.txt
+   python app.py
+   ```
+4. Buka `http://127.0.0.1:8050` di browser.
+
+Pengguna Windows juga bisa langsung klik dua kali **`run_dashboard.bat`** — launcher ini otomatis membuat virtual environment, memasang dependencies, dan menjalankan dashboard.
+
+## Teknologi yang Digunakan
+
+| Tahap | Tools |
+|---|---|
+| Data cleaning & descriptive analytics | Google Sheets, Spreadsheet formulas, Google Visualization API Query Language, Pivot Table |
+| Business intelligence | Looker Studio, Plotly, Dash, Dash Bootstrap Components |
+| Data processing | Python, Pandas, NumPy |
+| Predictive analytics | Orange Data Mining, Random Forest Regression, Linear Regression, One-hot Encoding, Random Sampling |
+
 ## Berkas Proyek
 
 | Berkas | Deskripsi |
 |---|---|
 | `synthetic_store_indonesia.xlsx` | Data mentah, proses pembersihan, dan hasil analisis deskriptif/SQL |
 | `informasi_penjualan_super_market_indonesia.pdf` | Dashboard visualisasi data (Looker Studio) |
+| `app.py` | Aplikasi Supermarket BI by Kendrick Filbert berbasis Plotly Dash |
+| `sources.csv` | Dataset bersih (10.076 record transaksi) yang dipakai oleh `app.py` dan workflow Orange |
+| `requirements.txt` | Daftar dependencies Python untuk menjalankan dashboard |
+| `run_dashboard.bat` | Launcher dashboard untuk Windows |
+| `README_DASHBOARD.md` | Dokumentasi khusus cara menjalankan dashboard Plotly Dash |
 | `analisis-prediktif-supermarket.ows` | Workflow analisis prediktif keuntungan (Orange Data Mining) |
 | `url.txt` | Tautan menuju Google Sheets dan Looker Studio |
-| `README.md` | Dokumentasi proyek ini |
+| `README.md` | Dokumentasi lengkap proyek ini |
+
+## Kontributor
+
+**Kendrick Filbert** — pengembang *Supermarket BI by Kendrick Filbert*, sekaligus penyusun keseluruhan analisis: data cleaning, spreadsheet analysis, SQL-like query, business intelligence, interactive dashboard development, predictive modeling, hingga komunikasi insight bisnis.
+
+> *Catatan penggunaan data:* seluruh identitas pelanggan dan data transaksi dalam dataset digunakan hanya untuk pembelajaran, submission, eksperimen analisis data, demonstrasi dashboard, dan portofolio. Hasil analisis tidak seharusnya digunakan sebagai dasar keputusan bisnis nyata tanpa validasi data dan pemeriksaan tambahan lebih lanjut.
